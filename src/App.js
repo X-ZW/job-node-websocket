@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom'
+import dealFn from './redux/connect';
+import Login from './container/login';
+import Register from './container/register';
+import AuthRoute from './component/authroute';
+import BossInfo from './container/bossinfo';
+import GeniusInfo from './container/geniusinfo';
+import DashBoard from './component/dashboard'
+import Chat from './component/chat'
+import { getMegList, recvMsg } from './redux/action'
+class App extends Component {
+  componentDidMount() {
+    this.props.dispatch(getMegList())
+    this.props.dispatch(recvMsg())
+  }
+  render() {
+    return (
+      <Fragment>
+        <AuthRoute></AuthRoute>
+        <Switch>
+          <Route path='/login' component={Login} />
+          <Route path='/register' component={Register} />
+          <Route path='/bossinfo' component={BossInfo} />
+          <Route path='/geniusinfo' component={GeniusInfo} />
+          <Route path='/chat/:user' component={Chat} />
+          <Route component={DashBoard} />
+          <Redirect from="/" extra to="/login"></Redirect>
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          {/* <Route path="*" component={Login}></Route> */}
+        </Switch>
+      </Fragment>
+    )
+  }
 }
 
+App = dealFn(App)
 export default App;
